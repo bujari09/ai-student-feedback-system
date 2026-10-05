@@ -37,6 +37,9 @@ _ALBANIAN_STEMS: dict[str, str] = {
     "vleresim": "grading",
 }
 
+# Generic words that entity analysis returns but that are not useful topics
+_GENERIC = {"way", "thing", "lot", "bit", "time", "concept", "idea", "part", "day", "week", "semester", "course"}
+
 _LOOKUP = {synonym: label for label, synonyms in _SYNONYMS.items() for synonym in synonyms}
 _NON_WORD = re.compile(r"[^\w\s-]")
 
@@ -77,6 +80,8 @@ def normalize_topic(raw: str) -> str | None:
         return _LOOKUP[singular]
     if words[-1] in _LOOKUP:  # e.g. "weekly lectures" -> "lectures"
         return _LOOKUP[words[-1]]
+    if singular in _GENERIC:
+        return None
     return singular
 
 

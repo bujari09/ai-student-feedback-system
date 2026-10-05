@@ -1,0 +1,25 @@
+[Unit]
+Description=AI Student Feedback System - FastAPI backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=feedback
+Group=feedback
+WorkingDirectory=/opt/ai-feedback/app/backend
+ExecStart=/opt/ai-feedback/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+# Hardening: the service can only read its code and talk to the network
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

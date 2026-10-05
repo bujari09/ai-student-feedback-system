@@ -40,9 +40,10 @@ _GEMINI_PROMPT = (
     "Return:\n"
     "- language: ISO 639-1 code of the feedback\n"
     "- sentiment_score: from -1.0 (very negative) to 1.0 (very positive); 0 for neutral or mixed\n"
-    "- topics: 1 to 4 short topics the feedback talks about, in English, lowercase, "
+    "- topics: 1 to 4 short topics that the feedback explicitly mentions, in English, lowercase, "
     "e.g. 'lectures', 'assignments', 'exams', 'professor', 'laboratory', 'course material', "
-    "'projects', 'workload'. Never include people's names.\n\n"
+    "'projects', 'workload'. Do not infer topics that are not mentioned. "
+    "Never include people's names.\n\n"
     "Feedback:\n"
 )
 
