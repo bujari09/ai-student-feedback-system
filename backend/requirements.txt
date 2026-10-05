@@ -3,3 +3,5 @@ uvicorn[standard]>=0.30
 pydantic>=2.7
 pydantic-settings>=2.3
 google-cloud-firestore>=2.16
+google-cloud-language>=2.13
+google-genai>=1.0
