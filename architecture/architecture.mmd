@@ -1,0 +1,21 @@
+flowchart TD
+    U["User / Lecturer<br/>Web browser"] -->|"HTTP :80"| NG
+
+    subgraph GCP["Google Cloud Project: student-feedback-system-ai"]
+        subgraph VM["Compute Engine VM: feedback-vm (e2-micro, Ubuntu 24.04 LTS, us-central1-a)"]
+            NG["Nginx<br/>reverse proxy"] -->|"/"| FE["React + Vite dashboard<br/>(static build)"]
+            NG -->|"/api/*"| BE["FastAPI backend<br/>uvicorn, systemd<br/>127.0.0.1:8000"]
+        end
+
+        BE -->|"1. store (pending)<br/>4. update (analyzed)"| DB[("Firestore<br/>Native mode")]
+        BE -->|"2. analyzeSentiment<br/>analyzeEntities"| NL["Cloud Natural<br/>Language API v2"]
+        BE -.->|"2b. other languages<br/>(e.g. Albanian)"| GM["Vertex AI<br/>Gemini 3.5 Flash-Lite"]
+        NL --> AN["Analysis layer<br/>sentiment label +<br/>topic normalization"]
+        GM -.-> AN
+        AN -->|"3"| BE
+        DB -->|"GET /api/analytics"| BE
+
+        SA{{"Service account feedback-vm-sa<br/>least privilege, no keys"}} -.-> BE
+        VM -.->|"Ops Agent"| LOG["Cloud Logging<br/>Cloud Monitoring"]
+        FW["Firewall: tcp:80 public,<br/>tcp:22 only via IAP"] -.-> VM
+    end
